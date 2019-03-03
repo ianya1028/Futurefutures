@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.contrib import admin
 from django.shortcuts import render,render_to_response,HttpResponseRedirect
-from . models import Member, FQ, FQ_type, Discuss, Yahoo_new, Transaction_info, Corporate, Track_stock, Information, Category, Yahoo_hot, Yahoo, Yahoo_stock, Yahoo_tec, Yahoo_tra, Cna ,Income_Statement_Q
+from . models import Member, FQ, FQ_type, Discuss, Yahoo_new, Transaction_info, Corporate, Track_stock, Information, Category, Yahoo_hot, Yahoo, Yahoo_stock, Yahoo_tec, Yahoo_tra, Cna ,Income_Statement_Q ,Yahoo_Tendency
 import random
 from django.core.mail import send_mail
 import statistics as st
@@ -352,6 +352,182 @@ def income_statement(request):
     category_id = Information.objects.get(stock_id=identity).category
     industry = Category.objects.get(category_id=category_id).category_name
     return render_to_response('inc_sta.html', {'stock_name': Information.objects.get(stock_id=identity).co_name, 'stock': sets, 'price': price, 'change_in_percent': change_in_percent, 'change': change, 'volume': volume, 'capital': capital, 'industry': industry, 'id': identity, 'name': name, 'loginstatus': loginstatus})
+
+
+def outcome_news(request):#搜尋文章結果 check
+    name = ''
+    loginstatus = False
+    try:
+        name = request.session['name']
+        loginstatus = True
+    except:
+        pass
+    type = request.GET.get('id', 0)
+    status_next = True
+    status_prev = True
+    if type is '1':
+        category = '最新頭條'
+        result = request.GET.get('c', 0)
+        res = Yahoo_new.objects.filter(title = result)[0]
+        last = Yahoo_new.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_new.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo_new.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_new.objects.get(id = res.id+1)
+            prev_article = Yahoo_new.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '2':
+        category = '國際財經'
+        result = request.GET.get('c', 0)
+        res = Cna.objects.filter(title = result)[0]
+        last = Cna.objects.last().id
+        if res.id is 520:
+            status_prev = False
+            next_article = Cna.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Cna.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Cna.objects.get(id = res.id+1)
+            prev_article = Cna.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '3':
+        category = '熱門點閱'
+        result = request.GET.get('c', 0)
+        res = Yahoo_hot.objects.filter(title = result)[0]
+        last = Yahoo_hot.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_hot.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo_hot.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_hot.objects.get(id = res.id+1)
+            prev_article = Yahoo_hot.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '4':
+        category = '台股盤勢'
+        result = request.GET.get('c', 0)
+        res = Yahoo.objects.filter(title = result)[0]
+        last = Yahoo.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo.objects.get(id = res.id+1)
+            prev_article = Yahoo.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '5':
+        category = '個股動態'
+        result = request.GET.get('c', 0)
+        res = Yahoo_stock.objects.filter(title = result)[0]
+        last = Yahoo_stock.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_stock.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo_stock.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_stock.objects.get(id = res.id+1)
+            prev_article = Yahoo_stock.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '6':
+        category = '科技產業'
+        result = request.GET.get('c', 0)
+        res = Yahoo_tec.objects.filter(title = result)[0]
+        last = Yahoo_tec.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_tec.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo_tec.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'satus_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_tec.objects.get(id = res.id+1)
+            prev_article = Yahoo_tec.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '7':
+        category = '傳統產業'
+        result = request.GET.get('c', 0)
+        res = Yahoo_tra.objects.filter(title = result)[0]
+        last = Yahoo_tra.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_tra.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Yahoo_tra.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_tra.objects.get(id = res.id+1)
+            prev_article = Yahoo_tra.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '8':
+        category = '國際財經'
+        result = request.GET.get('c', 0)
+        res = Cna.objects.objects.filter(title = result)[0]
+        last = Cna.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Cna.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:
+            status_next = False
+            prev_article = Cna.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Cna.objects.get(id = res.id+1)
+            prev_article = Cna.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+    if type is '9':
+        category = '熱門關鍵字'
+        result = request.GET.get('c', 0)
+        res = Yahoo_Tendency.objects.filter(title = result)[0]
+        last = Yahoo_Tendency.objects.last().id
+        if res.id is 1:
+            status_prev = False
+            next_article = Yahoo_Tendency.objects.get(id = res.id+1)
+            return render_to_response('news_con.html', {'status_prev': status_prev, 'status_next': status_next,'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        elif res.id is last:# 目前只有12筆 之後會增加到30多筆
+            status_next = False
+            prev_article = Yahoo_Tendency.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+        else:
+            next_article = Yahoo_Tendency.objects.get(id = res.id+1)
+            prev_article = Yahoo_Tendency.objects.get(id = res.id-1)
+            return render_to_response('news_con.html', {'status_next': status_next, 'status_prev': status_prev,'prev_article': prev_article, 'next_article': next_article, 'category': category, 'id': type, 'result': res, 'name': name, 'loginstatus': loginstatus})
+
+
 
 
 def home(request):  #理財小學堂

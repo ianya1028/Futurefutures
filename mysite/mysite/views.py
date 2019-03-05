@@ -20,10 +20,6 @@ def news(request):
 
 
 
-def news(request):
-    #return HttpResponse('about')
-    return render(request, 'news.html')
-
 
 
 def login(request): #登入功能

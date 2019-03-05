@@ -35,7 +35,7 @@ urlpatterns = [
 
     url(r'^get_news/', views.get_news),
     url(r'^search/', views.search_news),
-    url(r'^search/', views.search_news),
+    
 
 
 ]

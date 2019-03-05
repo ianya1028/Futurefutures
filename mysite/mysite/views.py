@@ -18,11 +18,6 @@ def news(request):
     #return HttpResponse('about')
     return render(request, 'news.html')
 
-def news(request):
-    #return HttpResponse('about')
-    return render(request, 'news.html')
-
-
 
 
 
